@@ -1,0 +1,27 @@
+{
+  "name": "gmail2mastodon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "コード.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "clasp push",
+    "lint": "eslint --ext .ts .",
+    "lint:fix": "eslint --fix --ext .ts ."
+  },
+  "author": "yumetodo",
+  "license": "BSL-1.0",
+  "devDependencies": {
+    "@google/clasp": "^2.3.0",
+    "@typescript-eslint/eslint-plugin": "^2.20.0",
+    "@typescript-eslint/parser": "^2.20.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1",
+    "typescript": "^3.8.2"
+  },
+  "dependencies": {
+    "@types/google-apps-script": "^1.0.10"
+  }
+}

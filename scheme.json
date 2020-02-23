@@ -1,0 +1,28 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "title": "gmail2mastodon setting file",
+    "type":"object",
+    "properties": {
+        "maxTootLength": {
+            "description": "max Toot length on your instance",
+            "type": "number"
+        },
+        "targetEMailAdresses": {
+            "description": "E-Mail adresses that you want to notify",
+            "type": "array",
+            "items": {
+                "description": "E-Mail adress",
+                "type": "string"
+            }
+        },
+        "mastodonInstance": {
+            "description": "The mastodon instance this bot use",
+            "type": "string",
+            "pattern": "[^/?#]*"
+        },
+        "mastodonReciveUserId": {
+            "description": "Your userid that recive notification",
+            "type": "string"
+        }
+    }
+}
