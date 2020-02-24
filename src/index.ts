@@ -52,6 +52,7 @@ const dateToStr = (d: DateLike) =>
   `${d.getUTCHours()}:${d.getUTCMinutes()}:${d.getUTCSeconds()}`;
 const dateToQuery = (d: DateLike) => `${d.getUTCFullYear()}/${d.getUTCMonth() + 1}/${d.getUTCDate()}`;
 //https://github.com/yumetodo/es-string-algorithm/blob/3a79d4e0c01096fab89cdf93db6dac2e27f31e13/src/index.ts#L129
+//https://qiita.com/YusukeHirao/items/2f0fb8d5bbb981101be0#iv-ii-%E3%82%B5%E3%83%AD%E3%82%B2%E3%83%BC%E3%83%88%E3%83%9A%E3%82%A2%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%81%97%E3%81%9F%E9%85%8D%E5%88%97%E5%8C%96
 /**
  * Create part of the `s`
  * @param s string
@@ -67,28 +68,11 @@ const substr = (s: string, pos = 0, n?: number): string => {
   if (typeof n === 'number' && n < 0) {
     throw new RangeError('std.substr: n < 0');
   }
-  let i = 0;
-  let l = 0;
-  let begin = 0;
-  for (const c of s) {
-    if (i === pos) {
-      if (typeof n === 'number' && 0 === n) {
-        return '';
-      }
-      begin = l;
-    } else if (typeof n === 'number' && i === pos + n) {
-      return s.substring(begin, l);
-    }
-    l += c.length;
-    ++i;
+  const arr = s.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]|[^\uD800-\uDFFF]/g) || [];
+  if (arr.length < pos) {
+    throw new RangeError(`std.substr: pos (which is ${pos}) > std.size(s) (which is ${arr.length})`);
   }
-  if (i < pos) {
-    throw new RangeError(`std.substr: pos (which is ${pos}) > std.size(s) (which is ${i})`);
-  }
-  if (0 === n) {
-    return '';
-  }
-  return s.substring(begin);
+  return arr.slice(pos, typeof n === 'number' ? pos + n : undefined).join('');
 };
 const getFile = (parentName: string, name: string) => {
   const files = DriveApp.searchFiles(`title = "${name}"`);
