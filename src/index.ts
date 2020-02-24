@@ -37,13 +37,25 @@ interface DateLike {
 }
 
 const concatEMailAdresses = (EMailAdresses: string[]) => EMailAdresses.join(' OR ');
+type DateConstructorArgumentApplyArrayType = [number, number, number?, number?, number?];
+const isDateConstructorArgumentApplyArrayType = (
+  arr: (number | undefined)[]
+): arr is DateConstructorArgumentApplyArrayType =>
+  2 <= arr.length &&
+  arr.length <= 6 &&
+  typeof arr[0] === 'number' &&
+  typeof arr[1] === 'number' &&
+  arr.every(e => typeof e === 'number' || typeof e === 'undefined');
 const strToDate = (s: string) => {
   const splitted = /^(\d{4})\/(\d{1,2})\/(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/.exec(s);
   if (null == splitted || 7 !== splitted.length) {
-    throw new Error(`The value stored in script propaties is invalid: ${s}`);
+    throw new Error(`date format is invalid: ${s}`);
   }
   splitted.shift();
   const parsed = splitted.map(d => parseInt(d));
+  if (!isDateConstructorArgumentApplyArrayType(parsed)) {
+    throw new Error(`date format is invalid: ${s}`);
+  }
   parsed[1] -= 1;
   return new Date(Date.UTC.apply(null, parsed));
 };
