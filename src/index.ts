@@ -37,12 +37,12 @@ interface DateLike {
 }
 
 const concatEMailAdresses = (EMailAdresses: string[]) => EMailAdresses.join(' OR ');
-type DateConstructorArgumentApplyArrayType = [number, number, number?, number?, number?];
+type DateConstructorArgumentApplyArrayType = [number, number, number?, number?, number?, number?, number?];
 const isDateConstructorArgumentApplyArrayType = (
   arr: (number | undefined)[]
 ): arr is DateConstructorArgumentApplyArrayType =>
   2 <= arr.length &&
-  arr.length <= 6 &&
+  arr.length <= 7 &&
   typeof arr[0] === 'number' &&
   typeof arr[1] === 'number' &&
   arr.every(e => typeof e === 'number' || typeof e === 'undefined');
