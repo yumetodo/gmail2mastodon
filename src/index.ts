@@ -135,14 +135,15 @@ export function main() {
   for (const t of messages) {
     for (const m of t) {
       if (!m.isUnread() || m.getDate().getTime() < lastDate.getTime()) continue;
-      const body = m.getBody().replace(/\n/g, '\\n');
-      const postText =
-        setting.mastodonReciveUserId + '\\n' + `${dateToStr(m.getDate())} ${m.getSubject()}` + '\\n' + body;
-      const payload = `{"status":"${substr(postText, 0, setting.maxTootLength)}","visibility":"direct"}`;
+      const postTextRaw =
+        setting.mastodonReciveUserId + '\\n' + `${dateToStr(m.getDate())} ${m.getSubject()}` + '\\n' + m.getBody();
+      // limit content length by maxTootLength
+      const postTextRawLimitted = substr(postTextRaw.replace(/\r/g, ''), 0, setting.maxTootLength);
+      const postText = postTextRawLimitted.substring(0, postTextRawLimitted.lastIndexOf('\n')).replace(/\n/g, '\\n');
+      const payload = `{"status":"${postText}","visibility":"direct"}`;
       UrlFetchApp.fetch(`https://${setting.mastodonInstance}/api/v1/statuses`, {
         method: 'post',
         contentType: 'application/json',
-        // limit content length by maxTootLength
         payload: payload,
         headers: { Authorization: 'Bearer ' + mastodonToken },
       });
