@@ -39,7 +39,7 @@ interface DateLike {
 const concatEMailAdresses = (EMailAdresses: string[]) => EMailAdresses.join(' OR ');
 const strToDate = (s: string) => {
   const splitted = /^(\d{4})\/(\d{1,2})\/(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/.exec(s);
-  if (7 !== splitted.length) {
+  if (null == splitted || 7 !== splitted.length) {
     throw new Error(`The value stored in script propaties is invalid: ${s}`);
   }
   splitted.shift();
@@ -95,13 +95,27 @@ const readJson = (parentName = 'gmail2mastodon_settings', jsonName = 'setting.js
 };
 export function main() {
   const properties = PropertiesService.getScriptProperties();
-  const lastDate = strToDate(properties.getProperty('lastDate'));
+  const lastDateStr = properties.getProperty('lastDate');
+  if (null == lastDateStr) {
+    console.error('missing lastDate');
+    return -1;
+  }
+  const lastDate = strToDate(lastDateStr);
   const mastodonToken = ScriptProperties.getProperty('mastodonToken');
   if (null == mastodonToken) {
     console.error('missing mastodonToken');
     return -1;
   }
   const setting: Gmail2MastodonSettingFile = readJson();
+  if (
+    null == setting.targetEMailAdresses ||
+    null == setting.mastodonReciveUserId ||
+    null == setting.mastodonInstance ||
+    null == setting.maxTootLength
+  ) {
+    console.error('invalid setting file');
+    return -1;
+  }
   const query = `after:${dateToQuery(lastDate)} from:(${concatEMailAdresses(setting.targetEMailAdresses)})`;
   const threads = GmailApp.search(query);
   const nextLastDate = Date.now();
