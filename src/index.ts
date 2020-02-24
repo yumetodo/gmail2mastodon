@@ -125,9 +125,8 @@ export function main() {
   for (const t of messages) {
     for (const m of t) {
       if (!m.isUnread() || m.getDate().getTime() < lastDate.getTime()) continue;
-      const postText = `${setting.mastodonReciveUserId}
-${dateToStr(m.getDate())} ${m.getSubject()}
-${m.getBody()}`;
+      const postText =
+        setting.mastodonReciveUserId + '\\n' + `${dateToStr(m.getDate())} ${m.getSubject()}` + '\\n' + m.getBody();
       UrlFetchApp.fetch(`https://${setting.mastodonInstance}/api/v1/statuses`, {
         method: 'post',
         contentType: 'application/json',
