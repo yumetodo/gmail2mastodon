@@ -134,7 +134,7 @@ export function main() {
   const messages = GmailApp.getMessagesForThreads(threads);
   for (const t of messages) {
     for (const m of t) {
-      if (m.getDate().getTime() < lastDate.getTime()) continue;
+      if (!m.isUnread() || m.getDate().getTime() < lastDate.getTime()) continue;
       const postTextRaw =
         setting.mastodonReciveUserId + '\\n' + `${dateToStr(m.getDate())} ${m.getSubject()}` + '\\n' + m.getBody();
       // limit content length by maxTootLength
