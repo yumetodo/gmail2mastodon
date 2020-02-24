@@ -128,13 +128,13 @@ export function main() {
     console.error('invalid setting file');
     return -1;
   }
-  const query = `after:${dateToQuery(lastDate)} from:(${concatEMailAdresses(setting.targetEMailAdresses)})`;
+  const query = `is:unread after:${dateToQuery(lastDate)} from:(${concatEMailAdresses(setting.targetEMailAdresses)})`;
   const threads = GmailApp.search(query);
   const nextLastDate = Date.now();
   const messages = GmailApp.getMessagesForThreads(threads);
   for (const t of messages) {
     for (const m of t) {
-      if (!m.isUnread() || m.getDate().getTime() < lastDate.getTime()) continue;
+      if (m.getDate().getTime() < lastDate.getTime()) continue;
       const postTextRaw =
         setting.mastodonReciveUserId + '\\n' + `${dateToStr(m.getDate())} ${m.getSubject()}` + '\\n' + m.getBody();
       // limit content length by maxTootLength
